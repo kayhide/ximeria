@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+here="$(cd "$(dirname $0)" && pwd)"
+PATH="$here:$here/../src:$PATH"
+
+$here/test_ximeria.bash
+$here/test_optparse.bash
