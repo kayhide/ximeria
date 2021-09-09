@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-testUsage() {
+test_without_args() {
     assertFalse ximeria 2>&1
     assertContains "$(ximeria 2>&1)" Usage
 }
 
-testHelp() {
+test_help() {
     assertContains "$(ximeria --help)" Usage
 }
 
-testList() {
+test_list_help() {
     assertContains "$(ximeria list --help)" Usage
 }
 

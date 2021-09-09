@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -u
+
+source "optparse.bash"
+
+read -r -d '' spec <<EOF
+program: "$PROGRAM $(basename "$0")"
+opts:
+  - help
+EOF
+
+vals="$(echo "$spec" | optparse.parse "$@")"
+res=$?
+
+if (( res )); then
+    >&2 echo
+    echo "$spec" | optparse.display_usage
+    exit 1
+fi
+
+eval "$vals"
+
+if [[ -n ${help+x} ]]; then
+    echo "$spec" | optparse.display_usage
+    exit 0
+fi
+
+echo "list running..."

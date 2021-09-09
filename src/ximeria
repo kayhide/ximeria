@@ -4,20 +4,22 @@ set -u
 
 here="$(cd "$(dirname "$0")" && pwd)"
 PATH="$here:$PATH"
+
+export PROGRAM=ximeria
 source "$here/prelude.bash"
 source "$here/optparse.bash"
-source "$here/command/list.bash"
 
 root_dir="${XIMERIA_ROOT:-$HOME/.ximeria}"
 templates_dir="${XIMERIA_TEMPLATES_DIR:-$root_dir/templates}"
 
 read -r -d '' spec <<EOF
-program: "$(basename "$0")"
+program: "$PROGRAM"
 opts:
   - help
   - version
 args:
   - COMMAND
+  - ...ARGS
 types:
   COMMAND:
     - list
@@ -27,26 +29,25 @@ vals="$(echo "$spec" | optparse.parse "$@")"
 res=$?
 
 if (( res )); then
-    echo
+    >&2 echo
     echo "$spec" | optparse.display_usage
     exit 1
 fi
 
 eval "$vals"
 
-if [[ -n ${version+x} ]]; then
-    echo "$VERSION"
-    exit 0
-elif [[ -n ${help+x} ]]; then
-    echo "$spec" | optparse.display_usage
-    exit 0
-fi
-
 if [[ -z ${command+x} ]]; then
+    if [[ -n ${version+x} ]]; then
+        echo "$VERSION"
+        exit 0
+    elif [[ -n ${help+x} ]]; then
+        echo "$spec" | optparse.display_usage
+        exit 0
+    fi
     >&2 echo "command is missing"
     >&2 echo
     echo "$spec" | optparse.display_usage
     exit 1
 fi
-    
-"command.$command.run"
+
+"$here/command/$command" "${args[@]}"

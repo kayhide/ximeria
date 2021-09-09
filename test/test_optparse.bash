@@ -2,14 +2,14 @@
 
 source "optparse.bash"
 
-test_optparse_parse_display_usage_with_nothing() {
+test_optparse_display_usage_with_nothing() {
     echo | assertTrue optparse.display_usage
 }
 
-test_optparse_parse_display_usage_with_options() {
+test_optparse_display_usage_with_options() {
     local expected
     read -r -d '' expected <<EOF
-Usage: prog COMMAND [OPTIONS]
+Usage: prog [OPTIONS] COMMAND
 
 Available options:
   --version
@@ -27,7 +27,7 @@ EOF
 
 }
 
-test_optparse_parse_display_usage_with_command() {
+test_optparse_display_usage_with_command() {
     local expected
     read -r -d '' expected <<EOF
 Usage: prog COMMAND
@@ -68,13 +68,13 @@ EOF
 test_optparse_parse_with_args() {
     local expected
     read -r -d '' expected <<EOF
-help=
 command=create
+args=(--help)
 EOF
     read -r -d '' spec <<EOF
 program: prog
 opts: [version, help]
-args: [COMMAND]
+args: [COMMAND, ...ARGS]
 EOF
 
     assertEquals "$expected" "$(
