@@ -16,6 +16,10 @@ optparse.parse() {
                 echo "$key='$2'"
                 shift 2
             elif [[ -n $key ]]; then
+                if [[ $key =~ help|version ]]; then
+                    local $key=;
+                fi
+
                 echo "$key="
                 shift
             fi
@@ -39,6 +43,12 @@ optparse.parse() {
                 echo "${x,,}=$arg"
             else
                 echo "${x,,}=$arg"
+            fi
+        else
+            if [[ -n ${help+x} || -n ${version+x} ]]; then
+                exit 0
+            else
+                die "${x,,} is missing"
             fi
         fi
         shift

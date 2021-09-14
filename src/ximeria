@@ -27,7 +27,6 @@ EOF
 
 vals="$(echo "$spec" | optparse.parse "$@")"
 res=$?
-
 if (( res )); then
     >&2 echo
     echo "$spec" | optparse.display_usage
@@ -36,18 +35,13 @@ fi
 
 eval "$vals"
 
-if [[ -z ${command+x} ]]; then
-    if [[ -n ${version+x} ]]; then
-        echo "$VERSION"
-        exit 0
-    elif [[ -n ${help+x} ]]; then
-        echo "$spec" | optparse.display_usage
-        exit 0
-    fi
-    >&2 echo "command is missing"
-    >&2 echo
+if [[ -n ${help+x} ]]; then
     echo "$spec" | optparse.display_usage
-    exit 1
+    exit 0
+elif [[ -n ${version+x} ]]; then
+    echo "${VERSION:-0.0.0}"
+    exit 0
 fi
+
 
 "$here/command/$command" "${args[@]}"

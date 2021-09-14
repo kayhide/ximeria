@@ -12,7 +12,6 @@ EOF
 
 vals="$(echo "$spec" | optparse.parse "$@")"
 res=$?
-
 if (( res )); then
     >&2 echo
     echo "$spec" | optparse.display_usage
